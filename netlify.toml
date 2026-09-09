@@ -1,0 +1,48 @@
+[build]
+  command = "npm run build"
+  publish = "dist"
+  functions = "netlify/functions"
+
+[functions]
+  node_bundler = "esbuild"
+
+# API routes -> Netlify Functions
+[[redirects]]
+  from = "/api/audit"
+  to = "/.netlify/functions/audit"
+  status = 200
+  force = true
+
+# Google Search Console OAuth (optional — only used if the site owner clicks
+# "Connect Search Console" and the deployment has GOOGLE_CLIENT_ID /
+# GOOGLE_CLIENT_SECRET configured; see README)
+[[redirects]]
+  from = "/api/gsc/start"
+  to = "/.netlify/functions/gsc-auth-start"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/api/gsc/callback"
+  to = "/.netlify/functions/gsc-callback"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/api/gsc/result"
+  to = "/.netlify/functions/gsc-result"
+  status = 200
+  force = true
+
+# SPA fallback (must come after the API redirects)
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "DENY"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
